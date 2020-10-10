@@ -1,0 +1,102 @@
+﻿<Window x:Class="HuanweiDzWPF.MainWindow"
+        x:Name="window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HuanweiDzWPF"
+        mc:Ignorable="d"
+        Title="HuanweiDZ 对账工具 测试版" Height="450" Width="900">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <StackPanel x:Name="spLeftMenu" Orientation="Vertical" Margin="8"
+                    Grid.Row="0" Grid.Column="0" Grid.RowSpan="13">
+            <Button x:Name="btnSyncCompany" Margin="5">
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center">
+                    载入数据表 <LineBreak/>
+                    公司侧
+                </TextBlock></Button>
+            <Button x:Name="btnSyncBank" Margin="5">
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center">
+                    载入数据表 <LineBreak/>
+                    银行侧
+                </TextBlock>
+            </Button>
+            <Button x:Name="btnClearWorkSpace" Margin="5">
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center">
+                    清除 <LineBreak/>
+                    工作区域
+                </TextBlock>
+            </Button>
+            <Button x:Name="btnAddNewLine" Margin="5">
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center">
+                    手动录入 <LineBreak/>
+                    科目
+                </TextBlock>
+            </Button>
+            <Button x:Name="btnTestAddRandomToComp" Margin="5" Click="btnTestAddRandomToComp_Click">
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center">
+                    测试 <LineBreak/>
+                    随机公司
+                </TextBlock>
+            </Button>
+            <Button x:Name="btnTestAddRandomToBank" Margin="5" Click="btnTestAddRandomToBank_Click">
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center">
+                    测试 <LineBreak/>
+                    随机银行
+                </TextBlock>
+            </Button>
+        </StackPanel>
+        <HeaderedContentControl x:Name="hccCompanyItems" Margin="8"
+                 Grid.Row="0" Grid.Column="1" Grid.RowSpan="13" Grid.ColumnSpan="2"
+                 DataContext="{Binding window}">
+            <HeaderedContentControl.Header>
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center">公司侧数据</TextBlock>
+            </HeaderedContentControl.Header>
+            <ListBox x:Name="lbxCompanyItems" ItemsSource="{Binding BookCompany, ElementName=window, Mode=TwoWay}">
+
+            </ListBox>
+        </HeaderedContentControl>
+        <HeaderedContentControl x:Name="hccBankItems" Margin="8"
+                 Grid.Row="0" Grid.Column="3" Grid.RowSpan="13" Grid.ColumnSpan="2">
+            <HeaderedContentControl.Header>
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center">银行侧数据</TextBlock>
+            </HeaderedContentControl.Header>
+            <ListBox x:Name="lbxBankItems">
+
+            </ListBox>
+        </HeaderedContentControl>
+        <HeaderedContentControl x:Name="hccBalanceItems" Margin="8"
+                 Grid.Row="0" Grid.Column="5" Grid.RowSpan="13" Grid.ColumnSpan="2">
+            <HeaderedContentControl.Header>
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center">对账完成项目</TextBlock>
+            </HeaderedContentControl.Header>
+            <ListBox x:Name="lbxBalanceItems">
+
+            </ListBox>
+        </HeaderedContentControl>
+    </Grid>
+</Window>

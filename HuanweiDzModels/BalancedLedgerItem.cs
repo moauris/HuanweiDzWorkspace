@@ -6,5 +6,6 @@ namespace HuanweiDzModels
 {
     class BalancedLedgerItem
     {
+        
     }
 }

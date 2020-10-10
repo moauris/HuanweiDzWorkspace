@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HuanweiDzWorkspace", "HuanweiDzWorkspace\HuanweiDzWorkspace.csproj", "{1B0ACBE1-B08F-4A75-898F-68B982E36DBC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HuanweiDzModels", "HuanweiDzModels\HuanweiDzModels.csproj", "{B91F18BB-043A-4AE4-97ED-D95A93A05997}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuanweiDzWPF", "HuanweiDzWPF\HuanweiDzWPF.csproj", "{18E09FAA-2F94-4E09-9B39-4C82D8ECDACF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuanweiDzModelsTests", "HuanweiDzModelsTests\HuanweiDzModelsTests.csproj", "{462D9866-D8FD-4E26-8646-6D35CF3C8B87}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HuanweiDzWPFTests", "HuanweiDzWPFTests\HuanweiDzWPFTests.csproj", "{28E27E70-0C77-4675-85B8-DEE172CEABE0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +19,14 @@ Global
 		{1B0ACBE1-B08F-4A75-898F-68B982E36DBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B0ACBE1-B08F-4A75-898F-68B982E36DBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B0ACBE1-B08F-4A75-898F-68B982E36DBC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B91F18BB-043A-4AE4-97ED-D95A93A05997}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B91F18BB-043A-4AE4-97ED-D95A93A05997}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B91F18BB-043A-4AE4-97ED-D95A93A05997}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B91F18BB-043A-4AE4-97ED-D95A93A05997}.Release|Any CPU.Build.0 = Release|Any CPU
-		{462D9866-D8FD-4E26-8646-6D35CF3C8B87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{462D9866-D8FD-4E26-8646-6D35CF3C8B87}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{462D9866-D8FD-4E26-8646-6D35CF3C8B87}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{462D9866-D8FD-4E26-8646-6D35CF3C8B87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18E09FAA-2F94-4E09-9B39-4C82D8ECDACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18E09FAA-2F94-4E09-9B39-4C82D8ECDACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18E09FAA-2F94-4E09-9B39-4C82D8ECDACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18E09FAA-2F94-4E09-9B39-4C82D8ECDACF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28E27E70-0C77-4675-85B8-DEE172CEABE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28E27E70-0C77-4675-85B8-DEE172CEABE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28E27E70-0C77-4675-85B8-DEE172CEABE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28E27E70-0C77-4675-85B8-DEE172CEABE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
