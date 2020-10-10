@@ -6,21 +6,19 @@ namespace HuanweiDzModels
     public class LedgerItem
     {
         #region Constructor
-        public LedgerItem(LedgerSides side
-            , DateTime date, string info, double credit
+        public LedgerItem(DateTime date
+            , string info, double credit
             , double debit, string direction
             , double remain)
         {
-            Side = side;
             DateIncured = date;
             Info = info; Credit = credit; Debit = debit; Direction = direction;
             RemainingFund = remain;
         }
-        public LedgerItem(LedgerSides side, object[] parameters)
+        public LedgerItem(object[] parameters)
         {
             //判定是否正好具有6个元素
             if (parameters.Length != 6) throw new TargetParameterCountException("试图生成的参数数量不正确。");
-            Side = side;
             if (parameters[0] is null)
             {
                 DateIncured = null;
@@ -38,14 +36,13 @@ namespace HuanweiDzModels
         #endregion
 
         #region Properties
-        public LedgerSides Side { get; set; }
         public DateTime? DateIncured { get; set; }
         public string IncuredOn
         { 
             get
             {
-                if (DateIncured is null) return "未知";
-                return ((DateTime)DateIncured).ToString("yyyy年MM月dd日");
+                if (DateIncured is null) return "未知日期";
+                return ((DateTime)DateIncured).ToString("yyyy年M月d日");
             }
         }
        
@@ -62,20 +59,22 @@ namespace HuanweiDzModels
             //TODO: Make new Validation method for LedgerItem 
             throw new NotImplementedException();
         }
-        public static LedgerItem BuildIfValid(LedgerSides side, object[] Items)
+        public static LedgerItem BuildIfValid(object[] Items)
         {
-            if (IsValid(Items)) return new LedgerItem(side, Items);
+            if (IsValid(Items)) return new LedgerItem(Items);
             return null;
+        }
+
+        public override string ToString()
+        {
+            string format = "{0},\t{1}\t\t\t\t\t\t,￥{2,10},￥{3,10},{4},￥{5,10}";
+            string OutString = string.Format(format, IncuredOn, Info, Credit, Debit, Direction, RemainingFund);
+            return OutString;
         }
         #endregion
 
         #region Events
 
         #endregion
-    }
-
-    public enum LedgerSides
-    {
-        FromCompany, FromBank
     }
 }

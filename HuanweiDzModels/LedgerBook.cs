@@ -5,8 +5,13 @@ using System.Text;
 
 namespace HuanweiDzModels
 {
-    class LedgerBook : IEnumerable<LedgerItem>, IList<LedgerItem>
+    public class LedgerBook : IEnumerable<LedgerItem>, IList<LedgerItem>
     {
+        public LedgerBook(LedgerSides side)
+        {
+            Side = side;
+        }
+        public LedgerSides Side { get; set; }
         private LedgerItem[] _content = new LedgerItem[999];
 
         public LedgerItem this[int index]
@@ -98,9 +103,7 @@ namespace HuanweiDzModels
             for (int i = index; i < Count; i++)
             {
                 _content[i] = _content[i + 1];
-
             }
-            _content[Count - 1] = null;
             Count--;
         }
 
@@ -111,5 +114,11 @@ namespace HuanweiDzModels
                 yield return _content[i];
             }
         }
+    }
+
+
+    public enum LedgerSides
+    {
+        FromCompany, FromBank
     }
 }
