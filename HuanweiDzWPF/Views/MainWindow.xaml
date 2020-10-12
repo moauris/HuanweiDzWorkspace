@@ -70,23 +70,48 @@
                 </TextBlock>
             </Button>
         </StackPanel>
-        <HeaderedContentControl x:Name="hccCompanyItems" Margin="8"
-                 Grid.Row="0" Grid.Column="1" Grid.RowSpan="13" Grid.ColumnSpan="2"
-                 DataContext="{Binding window}">
-            <HeaderedContentControl.Header>
-                <TextBlock TextWrapping="Wrap" TextAlignment="Center">公司侧数据</TextBlock>
-            </HeaderedContentControl.Header>
-            <ListBox x:Name="lbxCompanyItems" ItemsSource="{Binding BookCompany, ElementName=window, Mode=TwoWay}">
+        <ScrollViewer Grid.Row="0" Grid.Column="1" Grid.RowSpan="13" Grid.ColumnSpan="2">
+            <HeaderedContentControl x:Name="hccCompanyItems" Margin="8" >
+                <HeaderedContentControl.Header>
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center">公司侧数据</TextBlock>
+                </HeaderedContentControl.Header>
+                <ListBox x:Name="lbxCompanyItems" ItemsSource="{Binding BookCompany, ElementName=window, Mode=TwoWay}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border CornerRadius="4" Margin="2" Background="Orange">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock DataContext="{Binding Path=IncuredOn}"/>
+                                    <TextBlock DataContext="{Binding Path=Info}"/>
+                                    <TextBlock DataContext="{Binding Path=Credit}"/>
+                                    <TextBlock DataContext="{Binding Path=Debit}"/>
+                                    <Button>确认</Button>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </HeaderedContentControl>
 
-            </ListBox>
-        </HeaderedContentControl>
+        </ScrollViewer>
         <HeaderedContentControl x:Name="hccBankItems" Margin="8"
-                 Grid.Row="0" Grid.Column="3" Grid.RowSpan="13" Grid.ColumnSpan="2">
+                 Grid.Row="0" Grid.Column="3" Grid.RowSpan="13" Grid.ColumnSpan="2" DataContext="{Binding}">
             <HeaderedContentControl.Header>
                 <TextBlock TextWrapping="Wrap" TextAlignment="Center">银行侧数据</TextBlock>
             </HeaderedContentControl.Header>
             <ListBox x:Name="lbxBankItems">
-
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border CornerRadius="4" Margin="2" Background="Orange">
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock DataContext="{Binding Path=IncuredOn}"/>
+                                <TextBlock DataContext="{Binding Path=Info}"/>
+                                <TextBlock DataContext="{Binding Path=Credit}"/>
+                                <TextBlock DataContext="{Binding Path=Debit}"/>
+                                <Button>确认</Button>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
             </ListBox>
         </HeaderedContentControl>
         <HeaderedContentControl x:Name="hccBalanceItems" Margin="8"
