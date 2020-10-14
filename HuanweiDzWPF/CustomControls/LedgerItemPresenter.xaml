@@ -4,17 +4,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HuanweiDzWPF.CustomControls"
-             mc:Ignorable="d" d:DesignWidth="370" Height="180"
+             mc:Ignorable="d" d:DesignWidth="370"
              FontFamily="Microsoft Yahei UI, Consolas">
     <UserControl.Resources>
-        <Brush x:Key="Tanzi">#883A1E</Brush>
+        <Brush x:Key="檀紫">#883A1E</Brush>
+        <Brush x:Key="妃色">#ED5736</Brush>
+        <Brush x:Key="淡橘橙">#FBA414</Brush>
+        <Brush x:Key="纯白">#FFFFFF</Brush>
         <Style x:Key="TextBoxCurrencyLarge" TargetType="TextBlock">
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="Foreground" Value="{StaticResource 纯白}"/>
+        </Style>
+        <Style x:Key="TextBoxCurrencyBorder" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource 妃色}"/>
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Padding" Value="0 5 10 5"/>
+            <Setter Property="Margin" Value="5 0 5 0"/>
         </Style>
     </UserControl.Resources>
-    <Border CornerRadius="5" Background="#FFC8ACC9" BorderThickness="3">
+    <Border CornerRadius="15" Background="{StaticResource 淡橘橙}">
         <StackPanel Orientation="Vertical" Margin="8">
             <StackPanel Orientation="Horizontal">
                 <Label>发生日期：</Label>
@@ -22,29 +32,29 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Label>账目说明：</Label>
-                <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Width="240">为游戏江湖公司3月份的工程款付款结余</TextBlock>
+                <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Width="240">款项332112，实际要为游戏江湖公司3月份的工程款第75%期工程完成度付款结余款项332112，实际要为游戏江湖公司3月份的工程款第75%期工程完成度付款结余款项332112，实际要为游戏江湖公司3月份的工程款第75%期工程完成度付款结余</TextBlock>
             </StackPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Background="{StaticResource Tanzi}">
-                    <StackPanel Orientation="Vertical">
-                        <Label>贷方</Label>
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+                    <Label>贷方</Label>
+                    <Border Style="{StaticResource TextBoxCurrencyBorder}">
                         <TextBlock Style="{StaticResource TextBoxCurrencyLarge}">
-                            ￥0.00
+                        ￥0.00
                         </TextBlock>
-                    </StackPanel>
-                </Border>
-                <Border Grid.Column="1">
-                    <StackPanel Orientation="Vertical">
-                        <Label>借方</Label>
+                    </Border>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Vertical">
+                    <Label>借方</Label>
+                    <Border Style="{StaticResource TextBoxCurrencyBorder}">
                         <TextBlock Style="{StaticResource TextBoxCurrencyLarge}">
-                            ￥376,632.33
+                        ￥376,632.33
                         </TextBlock>
-                    </StackPanel>
-                </Border>
+                    </Border>
+                </StackPanel>
             </Grid>
             <StackPanel Orientation="Horizontal">
                 <Label>余额：</Label>

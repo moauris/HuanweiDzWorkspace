@@ -12,7 +12,6 @@ namespace HuanweiDzWPF.Tests
     {
         public static LedgerItem GetRandomItem(Random rand)
         {
-            
             DateTime incurDate = new DateTime(rand.Next(2007, 2019), rand.Next(3, 7), rand.Next(2, 29));
             Debug.Print("生成的日期是{0}：", incurDate.ToShortDateString());
             string[] Seed0 =
@@ -51,6 +50,12 @@ namespace HuanweiDzWPF.Tests
             LedgerItem result = new LedgerItem(incurDate, infoString, credit, debit, "贷方", remain);
             return result;
         }
+        public static LedgerItem GetRandomItem()
+        {
+            Random rand = new Random();
+            return GetRandomItem(rand);
+        }
+
         public static LedgerBook GetRandomBook(int Size, LedgerSides Side)
         {
             LedgerBook book = new LedgerBook(Side);
