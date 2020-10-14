@@ -59,13 +59,11 @@ namespace HuanweiDzWPF.Tests
         public static LedgerBook GetRandomBook(int Size, LedgerSides Side)
         {
             LedgerBook book = new LedgerBook(Side);
-            LedgerItem item = null;
             
             for (int i = 0; i < Size; i++)
             {
-                item = GetRandomItem(new Random());
                 Thread.Sleep(100); //random 对象被产生的瞬间小于系统时钟时不会有变化。此处需要等待。
-                book.Add(item);
+                book.Add(GetRandomItem());
             }
             return book;
         }

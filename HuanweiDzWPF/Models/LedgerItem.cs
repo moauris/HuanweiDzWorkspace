@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Reflection;
 
 namespace HuanweiDzWPF.Models
@@ -48,9 +49,23 @@ namespace HuanweiDzWPF.Models
        
         public string Info { get; set; }
         public double Credit { get; set; }
+        public string CreditAsString
+        {
+            get => Credit.ToString("C", new CultureInfo("zh-CN"));
+        }
         public double Debit { get; set; }
+        public string DebitAsString
+        {
+            
+            get => Debit.ToString("C", new CultureInfo("zh-CN"));
+        }
         public string Direction { get; set; }
         public double RemainingFund { get; set; }
+        public string RemainingFundAsString
+        {
+
+            get => RemainingFund.ToString("C", new CultureInfo("zh-CN"));
+        }
         #endregion
 
         #region Methods

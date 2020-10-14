@@ -5,11 +5,98 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HuanweiDzWPF.Views"
         xmlns:viewmodel="clr-namespace:HuanweiDzWPF.ViewModels"
+        xmlns:models="clr-namespace:HuanweiDzWPF.Models"
+        xmlns:commands="clr-namespace:HuanweiDzWPF.Commands"
         mc:Ignorable="d"
         Title="HuanweiDZ 对账工具 测试版" Height="450" Width="900">
     <Window.Resources>
         <viewmodel:MainWindowViewModels x:Key="ViewModels"/>
+        
+        <Brush x:Key="檀紫">#883A1E</Brush>
+        <Brush x:Key="妃色">#ED5736</Brush>
+        <Brush x:Key="淡橘橙">#FBA414</Brush>
+        <Brush x:Key="纯白">#FFFFFF</Brush>
+        <Brush x:Key="云杉绿">#15231B</Brush>
+        <Brush x:Key="油绿">#253D24</Brush>
+        
+        <Style x:Key="TextBoxCurrencyLarge" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="Foreground" Value="{StaticResource 纯白}"/>
+        </Style>
+        <Style x:Key="TextBoxCurrencyBorder" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource 油绿}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource 妃色}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="0 5 10 5"/>
+            <Setter Property="Margin" Value="5 0 5 0"/>
+        </Style>
+        
+        <DataTemplate x:Key="LedgerItemPresenter" DataType="{x:Type models:LedgerItem}">
+            <Border CornerRadius="15" Background="{StaticResource 淡橘橙}" 
+                    BorderBrush="{StaticResource 纯白}" BorderThickness="3"
+                    Width="480">
+                <StackPanel Orientation="Vertical" Margin="8">
+                    <StackPanel Orientation="Horizontal">
+                        <Label>发生日期：</Label>
+                        <TextBlock VerticalAlignment="Center" Text="{Binding IncuredOn}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label>账目说明：</Label>
+                        <TextBlock VerticalAlignment="Center" 
+                                   TextWrapping="Wrap"
+                                   Text="{Binding Info}"/>
+                    </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Vertical">
+                            <Label>贷方</Label>
+                            <Border Style="{StaticResource TextBoxCurrencyBorder}">
+                                <TextBlock Style="{StaticResource TextBoxCurrencyLarge}" 
+                                           Text="{Binding CreditAsString}"/>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Vertical">
+                            <Label>借方</Label>
+                            <Border Style="{StaticResource TextBoxCurrencyBorder}">
+                                <TextBlock Style="{StaticResource TextBoxCurrencyLarge}" 
+                                           Text="{Binding DebitAsString}"/>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                    <StackPanel Orientation="Horizontal">
+                        <Label>余额：</Label>
+                        <TextBlock VerticalAlignment="Center" TextWrapping="Wrap"
+                                   TextAlignment="Right" Text="{Binding RemainingFundAsString}"/>
+                    </StackPanel>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="48"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="5"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="26"/>
+                        </Grid.RowDefinitions>
+                        <Button Grid.Column="1">确认</Button>
+                        <Button Grid.Column="3">移除</Button>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
     </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static commands:RoutedCommands.AddRandomLedgerItemCommand}"
+                        CanExecute="CanExecute_AddRandomLedgerItem"
+                        Executed="Excuted_AddRandomLedgerItem"/>
+    </Window.CommandBindings>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -61,33 +148,31 @@
                     科目
                 </TextBlock>
             </Button>
-            <Button x:Name="btnTestAddRandomToComp" Margin="5" Click="btnTestAddRandomToComp_Click">
+            <Button x:Name="btnTestAddRandomToComp" Margin="5" Command="{x:Static commands:RoutedCommands.AddRandomLedgerItemCommand}" CommandParameter="Company">
                 <TextBlock TextWrapping="Wrap" TextAlignment="Center">
                     测试 <LineBreak/>
                     随机公司
                 </TextBlock>
             </Button>
-            <Button x:Name="btnTestAddRandomToBank" Margin="5" Click="btnTestAddRandomToBank_Click">
+            <Button x:Name="btnTestAddRandomToBank" Margin="5" Command="{x:Static commands:RoutedCommands.AddRandomLedgerItemCommand}" CommandParameter="Bank">
                 <TextBlock TextWrapping="Wrap" TextAlignment="Center">
                     测试 <LineBreak/>
                     随机银行
                 </TextBlock>
             </Button>
         </StackPanel>
-        <HeaderedContentControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="13" Grid.ColumnSpan="6" MinHeight="450">
+        <HeaderedContentControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="13" Grid.ColumnSpan="6">
             <HeaderedContentControl.Header>
                 <TextBlock TextWrapping="Wrap" TextAlignment="Center">请核对同步数据</TextBlock>
             </HeaderedContentControl.Header>
-            <TabControl MinHeight="450">
+            <TabControl>
                 <TabItem Header="公司侧数据">
-                    <StackPanel DataContext="{StaticResource ViewModels}">
+                        <StackPanel DataContext="{StaticResource ViewModels}">
+
                         <ListBox ItemsSource="{Binding LedgerItemCollection}"
-                                 SelectedItem="{Binding SelectedLedgerItem}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding}"></TextBlock>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
+                                 SelectedItem="{Binding SelectedLedgerItem}"
+                                 ItemTemplate="{StaticResource LedgerItemPresenter}"
+                                 MaxHeight="360">
                         </ListBox>
                     </StackPanel>
                 </TabItem>

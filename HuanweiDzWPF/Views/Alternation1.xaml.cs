@@ -1,4 +1,5 @@
-﻿using HuanweiDzWPF.ViewModels;
+﻿using HuanweiDzWPF.Tests;
+using HuanweiDzWPF.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,25 +20,38 @@ namespace HuanweiDzWPF.Views
     /// </summary>
     public partial class Alternation1 : Window
     {
+        private MainWindowViewModels ViewModel = null;
         public Alternation1()
         {
+
             InitializeComponent();
-            ViewModel = Resources["ViewModel"] as MainWindowViewModels;
-            //if (ViewModel == null)
-            //{
-            //    throw new NullReferenceException("ViewModel 不可以为 NULL");
-            //}
+            ViewModel = Resources["ViewModels"] as MainWindowViewModels;
+            if (ViewModel == null)
+            {
+                throw new NullReferenceException("ViewModels 不可以为 NULL");
+            }
         }
 
-        private MainWindowViewModels ViewModel = null;
-        private void btnTestAddRandomToComp_Click(object sender, RoutedEventArgs e)
-        {
 
+        private void CanExecute_AddRandomLedgerItem(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
         }
 
-        private void btnTestAddRandomToBank_Click(object sender, RoutedEventArgs e)
+        private void Excuted_AddRandomLedgerItem(object sender, ExecutedRoutedEventArgs e)
         {
-
+            switch (e.Parameter)
+            {
+                case "Bank":
+                    MessageBox.Show("唉，还没做呢，还没做！");
+                    break;
+                case "Company":
+                    //执行添加公司侧逻辑
+                    ViewModel.LedgerItemCollection.Add(LedgerGenerator.GetRandomItem());
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
