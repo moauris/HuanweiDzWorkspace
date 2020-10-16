@@ -7,7 +7,7 @@
         xmlns:viewmodel="clr-namespace:HuanweiDzWPF.ViewModels"
         xmlns:models="clr-namespace:HuanweiDzWPF.Models"
         xmlns:commands="clr-namespace:HuanweiDzWPF.Commands"
-        mc:Ignorable="d"
+        mc:Ignorable="d" FontFamily="Microsoft Yahei UI"
         Title="HuanweiDZ 对账工具 测试版" Height="450" Width="900">
     <Window.Resources>
         <viewmodel:MainWindowViewModels x:Key="ViewModels"/>
@@ -165,16 +165,42 @@
             <HeaderedContentControl.Header>
                 <TextBlock TextWrapping="Wrap" TextAlignment="Center">请核对同步数据</TextBlock>
             </HeaderedContentControl.Header>
-            <TabControl>
+            <TabControl Height="380">
                 <TabItem Header="公司侧数据">
-                        <StackPanel DataContext="{StaticResource ViewModels}">
+                    <Grid DataContext="{StaticResource ViewModels}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="510"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
 
                         <ListBox ItemsSource="{Binding LedgerItemCollection}"
                                  SelectedItem="{Binding SelectedLedgerItem}"
                                  ItemTemplate="{StaticResource LedgerItemPresenter}"
-                                 MaxHeight="360">
+                                 Grid.Column="0" Grid.Row="0" Grid.RowSpan="11">
                         </ListBox>
-                    </StackPanel>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" 
+                                   FontSize="26" TextAlignment="Center">统计数据一览</TextBlock>
+                        <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Center" VerticalAlignment="Center">
+                            总条目数：
+                        </TextBlock>
+                        <TextBlock Grid.Row="1" Grid.Column="2" TextAlignment="Center" 
+                                   VerticalAlignment="Center"
+                                   Text="{Binding LedgerItemCollection.Count}"/>
+                    </Grid>
                 </TabItem>
                 <TabItem Header="银行侧数据">
                     <StackPanel>

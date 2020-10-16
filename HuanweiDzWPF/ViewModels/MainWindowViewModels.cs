@@ -13,10 +13,7 @@ namespace HuanweiDzWPF.ViewModels
     {
         public MainWindowViewModels()
         {
-            LedgerItemCollection = new ObservableCollection<LedgerItem>
-            {
-                LedgerGenerator.GetRandomItem()
-            };
+            LedgerItemCollection = new ObservableCollection<LedgerItem>();
         }
 
         private ObservableCollection<LedgerItem> ledgerItemCollection;
