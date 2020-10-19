@@ -1,4 +1,5 @@
-﻿using HuanweiDzWPF.Tests;
+﻿using HuanweiDzWPF.Services;
+using HuanweiDzWPF.Tests;
 using HuanweiDzWPF.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,18 @@ namespace HuanweiDzWPF.Views
                 default:
                     break;
             }
+        }
+
+        private void CanExecute_ReadExcel(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void Excuted_ReadExcel(object sender, ExecutedRoutedEventArgs e)
+        {
+            //TODO: 编写读取Excel的行为
+            var reader = new ExcelReader(@"C:\Users\40137\source\repos\Huanwei_Account\Samples\Dummy公司对账1.xls");
+            reader.Run();
         }
     }
 }

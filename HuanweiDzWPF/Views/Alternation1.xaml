@@ -96,6 +96,9 @@
         <CommandBinding Command="{x:Static commands:RoutedCommands.AddRandomLedgerItemCommand}"
                         CanExecute="CanExecute_AddRandomLedgerItem"
                         Executed="Excuted_AddRandomLedgerItem"/>
+        <CommandBinding Command="{x:Static commands:RoutedCommands.ReadExcelCommand}"
+                        CanExecute="CanExecute_ReadExcel"
+                        Executed="Excuted_ReadExcel"/>
     </Window.CommandBindings>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -124,7 +127,7 @@
         </Grid.RowDefinitions>
         <StackPanel x:Name="spLeftMenu" Orientation="Vertical" Margin="8"
                     Grid.Row="0" Grid.Column="0" Grid.RowSpan="13">
-            <Button x:Name="btnSyncCompany" Margin="5">
+            <Button x:Name="btnSyncCompany" Margin="5" Command="{x:Static commands:RoutedCommands.ReadExcelCommand}" CommandParameter="Company">
                 <TextBlock TextWrapping="Wrap" TextAlignment="Center">
                     载入数据表 <LineBreak/>
                     公司侧
