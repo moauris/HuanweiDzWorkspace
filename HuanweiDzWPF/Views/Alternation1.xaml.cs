@@ -63,8 +63,8 @@ namespace HuanweiDzWPF.Views
         private void Excuted_ReadExcel(object sender, ExecutedRoutedEventArgs e)
         {
             //TODO: 编写读取Excel的行为
-            var reader = new ExcelReader(@"C:\Users\40137\source\repos\Huanwei_Account\Samples\Dummy公司对账1.xls");
-            reader.Run();
+            var reader = new ExcelReader(@"C:\Users\40137\source\repos\Huanwei_Account\Samples\1月明细账.xls", (string)e.Parameter);
+            ViewModel.LedgerItemCollection = reader.Read();
         }
     }
 }
