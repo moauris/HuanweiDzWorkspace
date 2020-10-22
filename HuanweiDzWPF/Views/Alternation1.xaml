@@ -20,6 +20,9 @@
         <Brush x:Key="油绿">#253D24</Brush>
         <Brush x:Key="锌灰">#7A7374</Brush>
         <Brush x:Key="琥珀黄">#FEBA07</Brush>
+        <Brush x:Key="舌红">#F19790</Brush>
+        <Brush x:Key="海鸥灰">#908878</Brush>
+        <Brush x:Key="银灰">#918072</Brush>
         
         <Style x:Key="TextBoxCurrencyLarge" TargetType="TextBlock">
             <Style.Triggers>
@@ -96,6 +99,54 @@
                         <Button Grid.Column="3">移除</Button>
                     </Grid>
                 </StackPanel>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate x:Key="MatchedItemPresenter" DataType="{x:Type models:ConsolidatedPair}">
+            <Border CornerRadius="15" Background="{StaticResource 舌红}" 
+                    BorderBrush="{StaticResource 海鸥灰}" BorderThickness="3"
+                    Width="480">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <ListBox DataContext="{Binding CompanySide}"
+                             ItemTemplate="{StaticResource LedgerItemPresenter}"
+                             Grid.Column="0" Grid.Row="0"/>
+                    <ListBox DataContext="{Binding BankSide}"
+                             ItemTemplate="{StaticResource LedgerItemPresenter}"
+                             Grid.Column="1" Grid.Row="0"/>
+                    <Grid Grid.Column="0" Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0">公司贷方余额</Label>
+                        <Border Style="{StaticResource TextBoxCurrencyBorder}"
+                                Grid.Column="1">
+                            <TextBlock Style="{StaticResource TextBoxCurrencyLarge}" 
+                                           Text="{Binding CompanyDebitRemain}"/>
+                        </Border>
+                    </Grid>
+                    <Grid Grid.Column="1" Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0">银行贷方余额</Label>
+                        <Border Style="{StaticResource TextBoxCurrencyBorder}"
+                                Grid.Column="1">
+                            <TextBlock Style="{StaticResource TextBoxCurrencyLarge}" 
+                                           Text="{Binding BankDebitRemain}"/>
+                        </Border>
+                    </Grid>
+                </Grid>
             </Border>
         </DataTemplate>
     </Window.Resources>
@@ -258,9 +309,10 @@
                     </Grid>
                 </TabItem>
                 <TabItem Header="对账数据确认">
-                    <StackPanel>
-                        <TextBox Height="600" FontSize="80">对账数据确认</TextBox>
-                    </StackPanel>
+                    <ListBox ItemsSource="{Binding MatchedCollection}"
+                             ItemTemplate="{StaticResource LedgerItemPresenter}">
+                        
+                    </ListBox>
                 </TabItem>
                 
             </TabControl>
