@@ -13,18 +13,29 @@ namespace HuanweiDzWPF.ViewModels
     {
         public MainWindowViewModels()
         {
-            LedgerItemCollection = new ObservableCollection<LedgerItem>();
+            CompanyLedger = new ObservableCollection<LedgerItem>();
+            BankLedger = new ObservableCollection<LedgerItem>();
         }
+        private ObservableCollection<LedgerItem> bankLedger = null;
 
-        private ObservableCollection<LedgerItem> ledgerItemCollection;
-
-        public ObservableCollection<LedgerItem> LedgerItemCollection
+        public ObservableCollection<LedgerItem> BankLedger
         {
-            get { return ledgerItemCollection; }
+            get { return bankLedger; }
+            set
+            {
+                bankLedger = value;
+                OnPropertyChanged("BankLedger");
+            }
+        }
+        private ObservableCollection<LedgerItem> companyLedger;
+
+        public ObservableCollection<LedgerItem> CompanyLedger
+        {
+            get { return companyLedger; }
             set 
-            { 
-                ledgerItemCollection = value;
-                OnPropertyChanged("LedgerItemCollection");
+            {
+                companyLedger = value;
+                OnPropertyChanged("CompanyLedger");
             }
         }
 

@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace HuanweiDzWPF.Models
 {
     public class LedgerBook : IEnumerable<LedgerItem>, IList<LedgerItem>
     {
+        public LedgerBook()
+        {
+
+        }
         public LedgerBook(LedgerSides side)
         {
             Side = side;
@@ -46,7 +51,7 @@ namespace HuanweiDzWPF.Models
         {
             for (int i = 0; i < Count; i++)
             {
-                if (_content[i] == item) return true;
+                if (_content[i].Equals(item)) return true;
             }
             return false;
         }

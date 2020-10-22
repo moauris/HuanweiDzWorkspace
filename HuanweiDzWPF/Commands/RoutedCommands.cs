@@ -10,5 +10,6 @@ namespace HuanweiDzWPF.Commands
     {
         public static RoutedCommand AddRandomLedgerItemCommand = new RoutedCommand();
         public static RoutedCommand ReadExcelCommand = new RoutedCommand();
+        public static RoutedCommand ConsolidateCommand = new RoutedCommand();
     }
 }

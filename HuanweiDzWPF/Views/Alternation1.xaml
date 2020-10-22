@@ -18,22 +18,29 @@
         <Brush x:Key="纯白">#FFFFFF</Brush>
         <Brush x:Key="云杉绿">#15231B</Brush>
         <Brush x:Key="油绿">#253D24</Brush>
+        <Brush x:Key="锌灰">#7A7374</Brush>
+        <Brush x:Key="琥珀黄">#FEBA07</Brush>
         
         <Style x:Key="TextBoxCurrencyLarge" TargetType="TextBlock">
+            <Style.Triggers>
+                <Trigger Property="Text" Value="￥0.00">
+                    <Setter Property="Foreground" Value="{StaticResource 淡橘橙}"/>
+                </Trigger>
+                
+            </Style.Triggers>
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="TextAlignment" Value="Right"/>
-            <Setter Property="Foreground" Value="{StaticResource 纯白}"/>
+            <Setter Property="Foreground" Value="{StaticResource 油绿}"/>
         </Style>
         <Style x:Key="TextBoxCurrencyBorder" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource 油绿}"/>
+            <Setter Property="Background" Value="{StaticResource 琥珀黄}"/>
             <Setter Property="BorderBrush" Value="{StaticResource 妃色}"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Padding" Value="0 5 10 5"/>
             <Setter Property="Margin" Value="5 0 5 0"/>
         </Style>
-        
         <DataTemplate x:Key="LedgerItemPresenter" DataType="{x:Type models:LedgerItem}">
             <Border CornerRadius="15" Background="{StaticResource 淡橘橙}" 
                     BorderBrush="{StaticResource 纯白}" BorderThickness="3"
@@ -99,6 +106,9 @@
         <CommandBinding Command="{x:Static commands:RoutedCommands.ReadExcelCommand}"
                         CanExecute="CanExecute_ReadExcel"
                         Executed="Excuted_ReadExcel"/>
+        <CommandBinding Command="{x:Static commands:RoutedCommands.ConsolidateCommand}"
+                        CanExecute="CanExecute_Consolidate"
+                        Executed="Excuted_Consolidate"/>
     </Window.CommandBindings>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -133,7 +143,7 @@
                     公司侧
                 </TextBlock>
             </Button>
-            <Button x:Name="btnSyncBank" Margin="5">
+            <Button x:Name="btnSyncBank" Margin="5" Command="{x:Static commands:RoutedCommands.ReadExcelCommand}" CommandParameter="Bank">
                 <TextBlock TextWrapping="Wrap" TextAlignment="Center">
                     载入数据表 <LineBreak/>
                     银行侧
@@ -163,6 +173,12 @@
                     随机银行
                 </TextBlock>
             </Button>
+            <Button x:Name="btnBeginConsolidation" Margin="5" Command="{x:Static commands:RoutedCommands.ConsolidateCommand}">
+                <TextBlock TextWrapping="Wrap" TextAlignment="Center">
+                    开始 <LineBreak/>
+                    对账
+                </TextBlock>
+            </Button>
         </StackPanel>
         <HeaderedContentControl Grid.Row="0" Grid.Column="1" Grid.RowSpan="13" Grid.ColumnSpan="6">
             <HeaderedContentControl.Header>
@@ -190,7 +206,7 @@
                             <RowDefinition Height="1*"/>
                         </Grid.RowDefinitions>
 
-                        <ListBox ItemsSource="{Binding LedgerItemCollection}"
+                        <ListBox ItemsSource="{Binding CompanyLedger}"
                                  SelectedItem="{Binding SelectedLedgerItem}"
                                  ItemTemplate="{StaticResource LedgerItemPresenter}"
                                  Grid.Column="0" Grid.Row="0" Grid.RowSpan="11">
@@ -202,13 +218,44 @@
                         </TextBlock>
                         <TextBlock Grid.Row="1" Grid.Column="2" TextAlignment="Center" 
                                    VerticalAlignment="Center"
-                                   Text="{Binding LedgerItemCollection.Count}"/>
+                                   Text="{Binding CompanyLedger.Count}"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="银行侧数据">
-                    <StackPanel>
-                        <TextBox Height="600" FontSize="80">银行侧数据</TextBox>
-                    </StackPanel>
+                    <Grid DataContext="{StaticResource ViewModels}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="510"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+
+                        <ListBox ItemsSource="{Binding BankLedger}"
+                                 SelectedItem="{Binding SelectedLedgerItem}"
+                                 ItemTemplate="{StaticResource LedgerItemPresenter}"
+                                 Grid.Column="0" Grid.Row="0" Grid.RowSpan="11">
+                        </ListBox>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" 
+                                   FontSize="26" TextAlignment="Center">统计数据一览</TextBlock>
+                        <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Center" VerticalAlignment="Center">
+                            总条目数：
+                        </TextBlock>
+                        <TextBlock Grid.Row="1" Grid.Column="2" TextAlignment="Center" 
+                                   VerticalAlignment="Center"
+                                   Text="{Binding BankLedger.Count}"/>
+                    </Grid>
                 </TabItem>
                 <TabItem Header="对账数据确认">
                     <StackPanel>

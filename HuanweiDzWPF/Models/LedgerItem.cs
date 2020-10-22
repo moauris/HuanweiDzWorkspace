@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace HuanweiDzWPF.Models
 {
-    public class LedgerItem
+    public class LedgerItem : IEquatable<LedgerItem>
     {
         #region Constructor
         public LedgerItem(DateTime date
@@ -85,6 +85,17 @@ namespace HuanweiDzWPF.Models
             string format = "{0},\t{1}\t\t\t\t\t\t,￥{2,10},￥{3,10},{4},￥{5,10}";
             string OutString = string.Format(format, IncuredOn, Info, Credit, Debit, Direction, RemainingFund);
             return OutString;
+        }
+
+        public bool Equals(LedgerItem other)
+        {
+            if (this.IncuredOn != other.IncuredOn) return false;
+            if (this.Info != other.Info) return false;
+            if (this.CreditAsString != other.CreditAsString) return false;
+            if (this.DebitAsString != other.DebitAsString) return false;
+            if (this.Direction != other.Direction) return false;
+            if (this.RemainingFundAsString != other.RemainingFundAsString) return false;
+            return true;
         }
         #endregion
 
