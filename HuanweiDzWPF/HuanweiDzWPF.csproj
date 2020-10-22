@@ -106,8 +106,10 @@
     <Compile Include="CustomControls\LedgerItemPresenter.xaml.cs">
       <DependentUpon>LedgerItemPresenter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\ConsolidatedPair.cs" />
     <Compile Include="Models\LedgerBook.cs" />
     <Compile Include="Models\LedgerItem.cs" />
+    <Compile Include="Services\Consolidator.cs" />
     <Compile Include="Services\ExcelReader.cs" />
     <Compile Include="Tests\LedgerGenerator.cs" />
     <Compile Include="ViewModels\MainWindowViewModels.cs" />

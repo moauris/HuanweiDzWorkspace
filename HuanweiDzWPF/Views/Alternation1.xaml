@@ -310,7 +310,7 @@
                 </TabItem>
                 <TabItem Header="对账数据确认">
                     <ListBox ItemsSource="{Binding MatchedCollection}"
-                             ItemTemplate="{StaticResource LedgerItemPresenter}">
+                             ItemTemplate="{StaticResource MatchedItemPresenter}">
                         
                     </ListBox>
                 </TabItem>

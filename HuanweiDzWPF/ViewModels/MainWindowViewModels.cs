@@ -15,8 +15,18 @@ namespace HuanweiDzWPF.ViewModels
         {
             CompanyLedger = new ObservableCollection<LedgerItem>();
             BankLedger = new ObservableCollection<LedgerItem>();
+            MatchedCollection = new ObservableCollection<ConsolidatedPair>();
         }
-        private ObservableCollection<LedgerItem> bankLedger = null;
+
+        private ObservableCollection<ConsolidatedPair> matchedcollection;
+
+        public ObservableCollection<ConsolidatedPair> MatchedCollection
+        {
+            get { return matchedcollection; }
+            set { matchedcollection = value; }
+        }
+
+        private ObservableCollection<LedgerItem> bankLedger;
 
         public ObservableCollection<LedgerItem> BankLedger
         {
