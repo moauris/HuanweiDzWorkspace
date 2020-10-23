@@ -31,6 +31,7 @@ namespace HuanweiDzWPF.Views
 
             InitializeComponent();
             ViewModel = Resources["ViewModels"] as MainWindowViewModels;
+
             if (ViewModel == null)
             {
                 throw new NullReferenceException("ViewModels 不可以为 NULL");

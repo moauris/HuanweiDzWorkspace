@@ -11,7 +11,7 @@
         Title="HuanweiDZ 对账工具 测试版" Height="450" Width="900">
     <Window.Resources>
         <viewmodel:MainWindowViewModels x:Key="ViewModels"/>
-        
+
         <Brush x:Key="檀紫">#883A1E</Brush>
         <Brush x:Key="妃色">#ED5736</Brush>
         <Brush x:Key="淡橘橙">#FBA414</Brush>
@@ -23,13 +23,13 @@
         <Brush x:Key="舌红">#F19790</Brush>
         <Brush x:Key="海鸥灰">#908878</Brush>
         <Brush x:Key="银灰">#918072</Brush>
-        
+
         <Style x:Key="TextBoxCurrencyLarge" TargetType="TextBlock">
             <Style.Triggers>
                 <Trigger Property="Text" Value="￥0.00">
                     <Setter Property="Foreground" Value="{StaticResource 淡橘橙}"/>
                 </Trigger>
-                
+
             </Style.Triggers>
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -105,7 +105,7 @@
         <DataTemplate x:Key="MatchedItemPresenter" DataType="{x:Type models:ConsolidatedPair}">
             <Border CornerRadius="15" Background="{StaticResource 舌红}" 
                     BorderBrush="{StaticResource 海鸥灰}" BorderThickness="3"
-                    Width="690">
+                    Width="770">
                 <Grid DataContext="{Binding}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
@@ -118,11 +118,11 @@
                     </Grid.RowDefinitions>
                     <ListBox DataContext="{Binding CompanySide}"
                              ItemTemplate="{StaticResource LedgerItemPresenter}"
-                             Height="Auto"
+                             Height="Auto" Margin="6 6 3 6"
                              Grid.Column="0" Grid.Row="0"/>
                     <ListBox DataContext="{Binding BankSide}"
                              ItemTemplate="{StaticResource LedgerItemPresenter}"
-                             Height="Auto"
+                             Height="Auto" Margin="3 6 6 6"
                              Grid.Column="1" Grid.Row="0"/>
                     <Grid Grid.Column="0" Grid.Row="1">
                         <Grid.ColumnDefinitions>
@@ -277,7 +277,8 @@
                 <TabItem Header="银行侧数据">
                     <Grid DataContext="{StaticResource ViewModels}">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="510"/>
+                            <ColumnDefinition Width="183"/>
+                            <ColumnDefinition Width="327"/>
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
@@ -298,25 +299,25 @@
                         <ListBox ItemsSource="{Binding BankLedger}"
                                  SelectedItem="{Binding SelectedLedgerItem}"
                                  ItemTemplate="{StaticResource LedgerItemPresenter}"
-                                 Grid.Column="0" Grid.Row="0" Grid.RowSpan="11">
+                                 Grid.Column="0" Grid.Row="0" Grid.RowSpan="11" Grid.ColumnSpan="2">
                         </ListBox>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" 
+                        <TextBlock Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" 
                                    FontSize="26" TextAlignment="Center">统计数据一览</TextBlock>
-                        <TextBlock Grid.Row="1" Grid.Column="1" TextAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Grid.Row="1" Grid.Column="2" TextAlignment="Center" VerticalAlignment="Center" Margin="0,8.5">
                             总条目数：
                         </TextBlock>
-                        <TextBlock Grid.Row="1" Grid.Column="2" TextAlignment="Center" 
+                        <TextBlock Grid.Row="1" Grid.Column="3" TextAlignment="Center" 
                                    VerticalAlignment="Center"
-                                   Text="{Binding BankLedger.Count}"/>
+                                   Text="{Binding BankLedger.Count}" Margin="0,8.5"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="对账数据确认" DataContext="{StaticResource ViewModels}">
                     <ListBox ItemsSource="{Binding MatchedCollection}"
                              ItemTemplate="{StaticResource MatchedItemPresenter}">
-                        
+
                     </ListBox>
                 </TabItem>
-                
+
             </TabControl>
         </HeaderedContentControl>
     </Grid>

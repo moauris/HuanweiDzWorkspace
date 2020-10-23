@@ -16,6 +16,25 @@ namespace HuanweiDzWPF.ViewModels
             CompanyLedger = new ObservableCollection<LedgerItem>();
             BankLedger = new ObservableCollection<LedgerItem>();
             MatchedCollection = new ObservableCollection<ConsolidatedPair>();
+#if DEBUG
+            //试图建立一个针对DEBUG模式的ViewModel，其中含有一些用于对比的pariedItem
+            LedgerItem item1 = LedgerGenerator.GetRandomItem();
+            LedgerItem item2 = LedgerGenerator.GetRandomItem();
+            LedgerItem item3 = LedgerGenerator.GetRandomItem();
+            LedgerItem item4 = LedgerGenerator.GetRandomItem();
+            LedgerItem item5 = LedgerGenerator.GetRandomItem();
+
+            var itemcollection1 = new ObservableCollection<LedgerItem>
+            { item1, item2, item3 };
+            var itemcollection2 = new ObservableCollection<LedgerItem>
+            { item4, item5};
+
+            MatchedCollection = new ObservableCollection<ConsolidatedPair>
+            { new ConsolidatedPair(itemcollection1, itemcollection2) };
+
+
+
+#endif
         }
 
         private ObservableCollection<ConsolidatedPair> matchedcollection;
