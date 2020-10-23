@@ -114,7 +114,8 @@ namespace HuanweiDzWPF.Views
         {
             //MessageBox.Show("开始执行对账逻辑");
             //首先进行简单的对比，单笔对单笔
-
+            Consolidator.Consolidate(ViewModel);
+            return;
         }
     }
 }

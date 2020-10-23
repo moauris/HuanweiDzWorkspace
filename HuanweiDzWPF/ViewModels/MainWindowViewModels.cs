@@ -23,7 +23,11 @@ namespace HuanweiDzWPF.ViewModels
         public ObservableCollection<ConsolidatedPair> MatchedCollection
         {
             get { return matchedcollection; }
-            set { matchedcollection = value; }
+            set 
+            { 
+                matchedcollection = value;
+                OnPropertyChanged("MatchedCollection");
+            }
         }
 
         private ObservableCollection<LedgerItem> bankLedger;

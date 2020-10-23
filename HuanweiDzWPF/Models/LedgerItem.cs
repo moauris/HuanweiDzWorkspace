@@ -60,6 +60,17 @@ namespace HuanweiDzWPF.Models
             get => Debit.ToString("C", new CultureInfo("zh-CN"));
         }
         public string Direction { get; set; }
+
+        public double DebitRemain //贷方余额
+        {
+            get
+            {
+                return Debit - Credit;
+            }
+        }
+
+        public bool Paired { get; set; } = false;
+
         public double RemainingFund { get; set; }
         public string RemainingFundAsString
         {

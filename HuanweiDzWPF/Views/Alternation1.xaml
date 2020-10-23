@@ -105,22 +105,24 @@
         <DataTemplate x:Key="MatchedItemPresenter" DataType="{x:Type models:ConsolidatedPair}">
             <Border CornerRadius="15" Background="{StaticResource 舌红}" 
                     BorderBrush="{StaticResource 海鸥灰}" BorderThickness="3"
-                    Width="480">
-                <Grid>
+                    Width="690">
+                <Grid DataContext="{Binding}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="200"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <ListBox DataContext="{Binding CompanySide}"
                              ItemTemplate="{StaticResource LedgerItemPresenter}"
+                             Height="Auto"
                              Grid.Column="0" Grid.Row="0"/>
                     <ListBox DataContext="{Binding BankSide}"
                              ItemTemplate="{StaticResource LedgerItemPresenter}"
+                             Height="Auto"
                              Grid.Column="1" Grid.Row="0"/>
                     <Grid Grid.Column="0" Grid.Row="1">
                         <Grid.ColumnDefinitions>
@@ -308,7 +310,7 @@
                                    Text="{Binding BankLedger.Count}"/>
                     </Grid>
                 </TabItem>
-                <TabItem Header="对账数据确认">
+                <TabItem Header="对账数据确认" DataContext="{StaticResource ViewModels}">
                     <ListBox ItemsSource="{Binding MatchedCollection}"
                              ItemTemplate="{StaticResource MatchedItemPresenter}">
                         
