@@ -48,7 +48,25 @@ namespace HuanweiDzWPF.Services
 
                     }
                 }
+
             }
+            //清理所有Paired为true的对象
+            var bankitemNotPaired = from i in model.BankLedger
+                                    where i.Paired = true
+                                    select i;
+            for (int i = 0; i < bankitemNotPaired.Count(); i++)
+            {
+                model.BankLedger.Remove(bankitemNotPaired.ToArray()[i]);
+            }
+            var companyitemNotPaired = from i in model.CompanyLedger
+                                    where i.Paired = true
+                                    select i;
+            for (int i = 0; i < companyitemNotPaired.Count(); i++)
+            {
+                model.CompanyLedger.Remove(companyitemNotPaired.ToArray()[i]);
+            }
+
+
         }
     }
 }
