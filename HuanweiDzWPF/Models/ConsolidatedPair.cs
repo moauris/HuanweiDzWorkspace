@@ -20,33 +20,33 @@ namespace HuanweiDzWPF.Models
             ObservableCollection<LedgerItem> companyCollection, 
             ObservableCollection<LedgerItem> bankCollection)
         {
-            CompanySide = companyCollection;
-            BankSide = bankCollection;
+            CompanyLedgerCollection = companyCollection;
+            BankLedgerCollection = bankCollection;
         }
 
 
         private ObservableCollection<LedgerItem> companySideLedgerItems;
 
-        public ObservableCollection<LedgerItem> CompanySide
+        public ObservableCollection<LedgerItem> CompanyLedgerCollection
         {
             get { return companySideLedgerItems; }
             set 
             { 
                 companySideLedgerItems = value;
-                OnPropertyChanged("CompanySide");
+                OnPropertyChanged("CompanyLedgerCollection");
             }
         }
 
         private ObservableCollection<LedgerItem> bankSideLedgerItems;
 
 
-        public ObservableCollection<LedgerItem> BankSide
+        public ObservableCollection<LedgerItem> BankLedgerCollection
         {
             get { return bankSideLedgerItems; }
             set 
             { 
                 bankSideLedgerItems = value;
-                OnPropertyChanged("BankSide");
+                OnPropertyChanged("BankLedgerCollection");
             }
         }
 
@@ -55,7 +55,7 @@ namespace HuanweiDzWPF.Models
             get
             {
                 double remain = 0;
-                foreach (LedgerItem item in CompanySide)
+                foreach (LedgerItem item in CompanyLedgerCollection)
                 {
                     remain += item.Debit;
                     remain -= item.Credit;
@@ -68,7 +68,7 @@ namespace HuanweiDzWPF.Models
             get
             {
                 double remain = 0;
-                foreach (LedgerItem item in BankSide)
+                foreach (LedgerItem item in BankLedgerCollection)
                 {
                     remain += item.Debit;
                     remain -= item.Credit;
