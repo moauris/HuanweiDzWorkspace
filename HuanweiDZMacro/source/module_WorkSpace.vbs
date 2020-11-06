@@ -6,6 +6,9 @@ Option Explicit
 Dim viewerSheet As Worksheet '代表了表格显示区
 Dim coRegion, baRegion As Range '代表了公司、银行方工作区域
 Dim arrowColor As Long '全局变量箭头颜色
+Dim i As Integer
+Dim j As Integer
+Dim rng As Range
 
 Sub SyncFromBook_btn_Click()
     Call SyncFromBookMain
@@ -238,8 +241,8 @@ Sub TryConsolidateSingle()
     '第一次循环，寻找一项配平项目
     
     Dim intTimesFound As Integer '统计找到几次
-    Dim MatchAddress as String  ' 记录找到的匹配地址
-    Dim SwitchAddres as String  ' 记录需要对调的匹配地址
+    Dim MatchAddress As String  ' 记录找到的匹配地址
+    Dim SwitchAddres As String  ' 记录需要对调的匹配地址
     For iRow = 3 To coRegion.Rows.Count
         intTimesFound = 0 '找到几次计数器归零
         MatchAddress = ""
@@ -279,7 +282,7 @@ Sub TryConsolidateSingle()
             End If
         Next jRow
         
-        if intTimesFound > 0 Then Call SwitchRow(MatchAddress, SwitchAddres)
+        If intTimesFound > 0 Then Call SwitchRow(MatchAddress, SwitchAddres)
     Next iRow
     '对右表未对齐项进行排列组合
     'Call CombineUnconsolidatedRows
@@ -301,18 +304,24 @@ Function SwitchRow_Obsolete(Target As Range, toRow As Integer)
 
 End Function
 ' 使 Origin 与 Destin 位置的行调换位置, 两者代表了某格的 Address
-Function SwitchRow(Origin as String, Destin as String)
-    Dim temp as Variant
-    Dim rngOrig as Range
-    Dim rngDest as Range
-
-    Set rngOrig = viewerSheet.Range(Origin).Offset(0, -5).Resize(1, 7)
-    Set rngDest = viewerSheet.Range(Destin).Offset(0, -5).Resize(1, 7)
-
-    temp = rngOrig.Cells.Formula
-    rngOrig.Cells.Formula = rngDest.Cells.Formula
-    rngDest.Cells.Formula = temp
-
+Function SwitchRow(origin As String, Destin As String)
+    Dim temp As Variant
+    Dim rngOrig As Range
+    Dim rngDest As Range
+    Dim Orig As Range
+    Dim Dest As Range
+    Set rngOrig = viewerSheet.Range(origin)
+    Set rngDest = viewerSheet.Range(Destin)
+    
+    ' 检查两者的数量是否相等
+    If rngOrig.Count <> rngDest.Count Then Exit Function
+    For i = 1 To rngOrig.Count
+        Set Orig = rngOrig(i).Offset(0, -5).Resize(1, 7)
+        Set Dest = rngDest(i).Offset(0, -5).Resize(1, 7)
+        temp = Orig.Cells.Formula
+        Orig.Cells.Formula = Dest.Cells.Formula
+        Dest.Cells.Formula = temp
+    Next
 End Function
 '将含有特定关键字的条目除外
 Sub MakeExceptionRow()
@@ -478,4 +487,6 @@ Sub MakeRowsEven()
     Loop
 
 End Sub
+
+
 
