@@ -235,21 +235,15 @@ Sub TryConsolidateSingle()
     Dim RemBa As Range
     Dim RowCo As Range
     Dim RowBa As Range
-    Dim MaxRow As Integer
-    Dim BlankFormula(1 To 7) As Variant
-    BlankFormula(1) = "无内容"
-    BlankFormula(2) = "无内容"
-    BlankFormula(3) = "无内容"
-    BlankFormula(4) = 0
-    BlankFormula(5) = 0
-    BlankFormula(6) = 0
-    BlankFormula(7) = 0
-    MaxRow = WorksheetFunction.Max(coRegion.Rows.Count, baRegion.Rows.Count)
     '第一次循环，寻找一项配平项目
     
     Dim intTimesFound As Integer '统计找到几次
+    Dim MatchAddress as String  ' 记录找到的匹配地址
+    Dim SwitchAddres as String  ' 记录需要对调的匹配地址
     For iRow = 3 To coRegion.Rows.Count
         intTimesFound = 0 '找到几次计数器归零
+        MatchAddress = ""
+        SwitchAddres = ""
         For jRow = 3 To baRegion.Rows.Count
         Set RemCo = viewerSheet.Range("$F$" & iRow)
         Set RowCo = RemCo.Offset(0, -5).Resize(1, 7)
@@ -260,24 +254,38 @@ Sub TryConsolidateSingle()
                     
                 If RemCo.Value = RemBa.Value Then '如果贷方余额相等
                     '以公司为准对齐两行，并标记颜色
-                    '新版本，在关系列表中显示
-                    'SwitchRow RemBa, iRow
-                    'RowCo.Interior.Color = colorConsolidated
-                    'RowBa.Interior.Color = colorConsolidated
+                    '记录需要调换位置的单元格位置
+                    If MatchAddress = "" Then
+                        MatchAddress = RemBa.Address
+                    Else
+                        MatchAddress = _
+                        Join(Array(MatchAddress, RemBa.Address), ",")
+                    End If
+                    ' 被调换的为公司方与银行方对齐的位置 + intTimesFound 的行间offset
+                    If SwitchAddres = "" Then
+                        SwitchAddres = RemCo.Offset(intTimesFound, 8).Address
+                    Else
+                        SwitchAddres = _
+                        Join(Array(SwitchAddres, _
+                        RemCo.Offset(intTimesFound, 8).Address), ",")
+                    End If
+
                     intTimesFound = intTimesFound + 1
-                    Call MakeRelation(RemCo, RemBa, intTimesFound)
                     
+                    'Call MakeRelation(RemCo, RemBa, intTimesFound)
                     'Call PointArrow(RemCo, RemBa)
                     '将中心格子的内容变为= 会使两表相连currentregion出错
                 End If
             End If
         Next jRow
+        
+        if intTimesFound > 0 Then Call SwitchRow(MatchAddress, SwitchAddres)
     Next iRow
     '对右表未对齐项进行排列组合
     'Call CombineUnconsolidatedRows
 End Sub
 ' 使target 与 toRow 位置的行调换位置
-Function SwitchRow(Target As Range, toRow As Variant)
+Function SwitchRow_Obsolete(Target As Range, toRow As Integer)
     Dim temp As Variant
     Dim fromRow As Integer
     Dim destination, origin As Range
@@ -290,6 +298,20 @@ Function SwitchRow(Target As Range, toRow As Variant)
     temp = origin.Cells.Formula
     origin.Cells.Formula = destination.Cells.Formula
     destination.Cells.Formula = temp
+
+End Function
+' 使 Origin 与 Destin 位置的行调换位置, 两者代表了某格的 Address
+Function SwitchRow(Origin as String, Destin as String)
+    Dim temp as Variant
+    Dim rngOrig as Range
+    Dim rngDest as Range
+
+    Set rngOrig = viewerSheet.Range(Origin).Offset(0, -5).Resize(1, 7)
+    Set rngDest = viewerSheet.Range(Destin).Offset(0, -5).Resize(1, 7)
+
+    temp = rngOrig.Cells.Formula
+    rngOrig.Cells.Formula = rngDest.Cells.Formula
+    rngDest.Cells.Formula = temp
 
 End Function
 '将含有特定关键字的条目除外
@@ -399,16 +421,16 @@ Sub MakeRelation(CompanyRow As Range, BankRow As Range, _
 End Sub
 
 ' 该子程序会寻找CoRegion和BaRegion中单侧有颜色的项目，并且用空行填充直至齐平
-Sub MakeRowsEven
+Sub MakeRowsEven()
     '寻找两个区域中行数多的一个作为max
-    Dim MaxRow as Integer
-    Dim coRow as Range
-    Dim baRow as Range
+    Dim MaxRow As Integer
+    Dim coRow As Range
+    Dim baRow As Range
     MaxRow = WorksheetFunction.Max(coRegion.Rows.Count, baRegion.Rows.Count)
 
     ' 循环MaxRow到最后一行，单侧颜色有，另一侧无时，将无的那一侧设为空行并打上灰色
     ' 定义空行的formula
-    Dim emptyFormula(1 to 7) as Variant
+    Dim emptyFormula(1 To 7) As Variant
     emptyFormula(1) = "'-"
     emptyFormula(2) = "'-"
     emptyFormula(3) = "'-"
@@ -416,12 +438,12 @@ Sub MakeRowsEven
     emptyFormula(5) = 0
     emptyFormula(6) = 0
     emptyFormula(7) = 0
-    Set coRow = coRegion.Rows(1)
-    Set baRow = baRegion.Rows(1)
-    dim MatchColor as Long
+    Set coRow = coRegion.Rows(3)
+    Set baRow = baRegion.Rows(3)
+    Dim MatchColor As Long
     ' 将匹配颜色初始化成rgbGray
-    MatchColor = rgbGray 
-    Do While coRow(1).value <> "" OR baRow(1).value <> ""
+    MatchColor = rgbGray
+    Do While coRow.Cells(1).Value <> "" Or baRow.Cells(1).Value <> ""
         ' 如果颜色匹配，则生成新的匹配颜色
         If coRow(1).Interior.Color = _
             baRow(1).Interior.Color Then
@@ -430,19 +452,30 @@ Sub MakeRowsEven
         End If
         ' 如果当前颜色不等于匹配颜色，则在原地增加空白行
         If coRow(1).Interior.Color <> MatchColor Then
-            coRow.Insert(xlDown)
-            coRow.Offset(-1, 0).Formula = emptyFormula
-            coRow.Offset(-1, 0).Interior.Color = rgbGray
+            coRow.Insert (xlDown)
+            With coRow.Offset(-1, 0)
+                .Formula = emptyFormula
+                .Interior.Color = rgbLightGray
+                .Font.Color = rgbWhite
+            End With
+            '增加空白行后需往上缩进
+            Set coRow = coRow.Offset(-1, 0)
         End If
 
         If baRow(1).Interior.Color <> MatchColor Then
-            baRow.Insert(xlDown)
-            baRow.Offset(-1, 0).Formula = emptyFormula
-            baRow.Offset(-1, 0).Interior.Color = rgbGray
+            baRow.Insert (xlDown)
+            With baRow.Offset(-1, 0)
+                .Formula = emptyFormula
+                .Interior.Color = rgbLightGray
+                .Font.Color = rgbWhite
+            End With
+            '增加空白行后需往上缩进
+            Set baRow = baRow.Offset(-1, 0)
         End If
 
-        set coRow = coRow.offset(1, 0)
-        set baRow = baRow.offset(1, 0)
+        Set coRow = coRow.Offset(1, 0)
+        Set baRow = baRow.Offset(1, 0)
     Loop
 
 End Sub
+
