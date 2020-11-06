@@ -3,6 +3,7 @@ Option Explicit
 ' 版本日期：2020-11-06
 ' 作者：https://github.com/moauris
 ' 联系方式：mchenf@icloud.com
+ 
 Dim viewerSheet As Worksheet '代表了表格显示区
 Dim coRegion, baRegion As Range '代表了公司、银行方工作区域
 Dim arrowColor As Long '全局变量箭头颜色
@@ -261,8 +262,8 @@ Sub TryConsolidateSingle()
     Dim SwitchAddres As String  ' 记录需要对调的匹配地址
     For iRow = 3 To coRegion.Rows.Count
         intTimesFound = 0 '找到几次计数器归零
-        MatchAddress = ""
-        SwitchAddres = ""
+        MatchAddress = "" '匹配地址归零
+        SwitchAddres = "" '交换地址归零
         
         Set RemCo = viewerSheet.Range("$F$" & iRow)
         For jRow = 3 To baRegion.Rows.Count
@@ -271,10 +272,10 @@ Sub TryConsolidateSingle()
             Set RowBa = RemBa.Offset(0, -5).Resize(1, 7)
             If RemCo.Interior.Color = rgbWhite And _
                     RemBa.Interior.Color = rgbWhite Then
-                    
-                If RemCo.Value = RemBa.Value Then '如果贷方余额相等
-                    '以公司为准对齐两行，并标记颜色
-                    '记录需要调换位置的单元格位置
+                '如果贷方余额相等
+                '以公司为准对齐两行，并标记颜色
+                '记录需要调换位置的单元格位置
+                If RemCo.Value = RemBa.Value Then 
                     If MatchAddress = "" Then
                         MatchAddress = RemBa.Address
                     Else
@@ -305,15 +306,13 @@ Sub TryConsolidateSingle()
         ' 3. 在公司方 rowco开始之后寻找第一个rgbGray的格子
         ' 执行对调
         Dim firstGrayRange As Range
-        i = coRegion.Rows.Count
-        Do While i >= 3
+        For i = coRegion.Rows.Count to 3 Step -1
             Set rng = viewerSheet.Range("$F$" & i)
             If rng.Interior.Color = rgbGray And rng.Offset(-1, 0).Interior.Color <> rgbGray Then
                 Set firstGrayRange = rng
                 Exit Do
             End If
-            i = i - 1
-        Loop
+        Next i
 
         If intTimesFound > 0 Then
             If intTimesFound = 1 Then
@@ -572,11 +571,3 @@ Sub MakeRowsEven()
     Loop
 
 End Sub
-
-
-
-
-
-
-
-
