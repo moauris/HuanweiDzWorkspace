@@ -10,6 +10,15 @@ Dim i As Integer
 Dim j As Integer
 Dim rng As Range
 
+Dim emptyFormula(1 To 7) As Variant '全局变量，用于表示一行空值
+' Enumeration for the Status of the Entries
+Public Enum EntryStatus
+    dzUnmatched = 0
+    dzException = 1
+    dzPossibleMatch = 2
+    dzCertain = 3
+End Enum
+
 Sub SyncFromBook_btn_Click()
     Call SyncFromBookMain
 End Sub
@@ -35,7 +44,14 @@ Sub SyncFromBookMain()
     'Run OpenFile Dialog
     Set targetSheet = RunOpenFileDialog
     Set viewerSheet = ThisWorkbook.Worksheets("表格显示区")
-    
+    ' 初始化空的方程列（7）
+    emptyFormula(1) = "'-"
+    emptyFormula(2) = "'-"
+    emptyFormula(3) = "'-"
+    emptyFormula(4) = 0
+    emptyFormula(5) = 0
+    emptyFormula(6) = 0
+    emptyFormula(7) = 0
     If targetSheet Is Nothing Then Exit Sub
     LedgerTitle = targetSheet.[A1].Value
     
@@ -226,8 +242,8 @@ Sub TryConsolidateSingle()
     
     '对表单的项目进行除外
     Call MakeExceptionRow
-    
-    ' 除外完毕后，生成空行填充不平项目
+
+    '生成空行填充不平项目
     Call MakeRowsEven
 
     '检查完毕，开始对账
@@ -247,11 +263,12 @@ Sub TryConsolidateSingle()
         intTimesFound = 0 '找到几次计数器归零
         MatchAddress = ""
         SwitchAddres = ""
-        For jRow = 3 To baRegion.Rows.Count
+        
         Set RemCo = viewerSheet.Range("$F$" & iRow)
-        Set RowCo = RemCo.Offset(0, -5).Resize(1, 7)
-        Set RemBa = viewerSheet.Range("$N$" & jRow)
-        Set RowBa = RemBa.Offset(0, -5).Resize(1, 7)
+        For jRow = 3 To baRegion.Rows.Count
+            Set RowCo = RemCo.Offset(0, -5).Resize(1, 7)
+            Set RemBa = viewerSheet.Range("$N$" & jRow)
+            Set RowBa = RemBa.Offset(0, -5).Resize(1, 7)
             If RemCo.Interior.Color = rgbWhite And _
                     RemBa.Interior.Color = rgbWhite Then
                     
@@ -274,7 +291,6 @@ Sub TryConsolidateSingle()
                     End If
 
                     intTimesFound = intTimesFound + 1
-                    
                     'Call MakeRelation(RemCo, RemBa, intTimesFound)
                     'Call PointArrow(RemCo, RemBa)
                     '将中心格子的内容变为= 会使两表相连currentregion出错
@@ -282,21 +298,58 @@ Sub TryConsolidateSingle()
             End If
         Next jRow
         
-        If intTimesFound > 0 Then Call SwitchRow(MatchAddress, SwitchAddres)
+        ' 如果找到了至少一项，需要
+        ' 1. 将RowCo标记
+        ' 2. 将记录的行进行对调
+        ' [Obsolete] 3. 在RowCo之后插入intTimesFound - 1 行
+        ' 3. 在公司方 rowco开始之后寻找第一个rgbGray的格子
+        ' 执行对调
+        Dim firstGrayRange As Range
+        i = coRegion.Rows.Count
+        Do While i >= 3
+            Set rng = viewerSheet.Range("$F$" & i)
+            If rng.Interior.Color = rgbGray And rng.Offset(-1, 0).Interior.Color <> rgbGray Then
+                Set firstGrayRange = rng
+                Exit Do
+            End If
+            i = i - 1
+        Loop
+
+        If intTimesFound > 0 Then
+            If intTimesFound = 1 Then
+                
+                Call MarkRowStatus(RowCo, EntryStatus.dzCertain)
+            Else
+                Call MarkRowStatus(RowCo, EntryStatus.dzPossibleMatch)
+            End If
+            Call SwitchRow(MatchAddress, SwitchAddres)
+            Do While intTimesFound > 1
+                'RowCo.Offset(1, 0).Insert (xlDown)
+                ' 改为与 firstGrayRange的offset对调
+                Call SwitchRow(RowCo.Offset(1, 0).Address, _
+                    firstGrayRange.Offset(intTimesFound - 1, 0).Address)
+                With RowCo.Offset(1, 0)
+                    .Formula = emptyFormula
+                    .Interior.Color = rgbLightGray
+                    .Font.Color = rgbWhite
+                End With
+                intTimesFound = intTimesFound - 1
+            Loop
+        End If
     Next iRow
     '对右表未对齐项进行排列组合
     'Call CombineUnconsolidatedRows
 End Sub
 ' 使target 与 toRow 位置的行调换位置
-Function SwitchRow_Obsolete(Target As Range, toRow As Integer)
+Function SwitchRow_Obsolete(target As Range, toRow As Integer)
     Dim temp As Variant
     Dim fromRow As Integer
     Dim destination, origin As Range
     '扩展target至整行
-    fromRow = Target.Row
+    fromRow = target.Row
     
-    Set destination = Target.CurrentRegion.Rows(toRow)
-    Set origin = Target.CurrentRegion.Rows(fromRow)
+    Set destination = target.CurrentRegion.Rows(toRow)
+    Set origin = target.CurrentRegion.Rows(fromRow)
     
     temp = origin.Cells.Formula
     origin.Cells.Formula = destination.Cells.Formula
@@ -315,14 +368,53 @@ Function SwitchRow(origin As String, Destin As String)
     
     ' 检查两者的数量是否相等
     If rngOrig.Count <> rngDest.Count Then Exit Function
-    For i = 1 To rngOrig.Count
-        Set Orig = rngOrig(i).Offset(0, -5).Resize(1, 7)
-        Set Dest = rngDest(i).Offset(0, -5).Resize(1, 7)
+    ' 这里不可以按照数列的序号取，如果中间有间隙的话它
+    ' 代表了它的下一个紧贴着的单元格
+    ' Destin恰好是连续的所以没有产生错误
+    Dim RowsFound As Integer
+    RowsFound = rngOrig.Count
+    i = 1
+    For Each rng In rngOrig
+        Set Orig = rng.Offset(0, -5).Resize(1, 7)
+        Set Dest = rngDest.Cells(i).Offset(0, -5).Resize(1, 7)
         temp = Orig.Cells.Formula
         Orig.Cells.Formula = Dest.Cells.Formula
         Dest.Cells.Formula = temp
-    Next
+        If RowsFound > 1 Then
+            Call MarkRowStatus(Dest, EntryStatus.dzPossibleMatch)
+        Else
+            Call MarkRowStatus(Dest, EntryStatus.dzCertain)
+        End If
+        i = i + 1
+    Next rng
+    
 End Function
+' 将某个行标记为【已经匹配】
+Function MarkRowStatus(target As Range, matchStatus As Long)
+    Dim InterColor As Long
+    Dim fontColor As Long
+    Select Case matchStatus
+        Case EntryStatus.dzUnmatched
+            InterColor = rgbRed
+            fontColor = rgbWhite
+        Case EntryStatus.dzException
+        
+        Case EntryStatus.dzPossibleMatch
+            InterColor = rgbYellow
+            fontColor = rgbBlack
+        Case EntryStatus.dzCertain
+            InterColor = rgbGreen
+            fontColor = rgbWhite
+        Case Else
+            InterColor = rgbWhite
+            fontColor = rgbBlack
+    End Select
+    With target
+        .Interior.Color = InterColor
+        .Font.Color = fontColor
+    End With
+End Function
+
 '将含有特定关键字的条目除外
 Sub MakeExceptionRow()
     Dim regex As Object
@@ -347,12 +439,12 @@ Sub MakeExceptionRow()
     Next rng
 End Sub
 '带入某一方的任意单元格进行排列组合
-Sub CombineUnconsolidatedRows(Target As Range)
+Sub CombineUnconsolidatedRows(target As Range)
 
 End Sub
 
 '在两个区域之间指向箭头, debug用，废止
-Function PointArrow(origin As Range, Target As Range)
+Function PointArrow(origin As Range, target As Range)
     
     Dim arrowColor1 As Long
     Dim arrowColor2 As Long
@@ -378,14 +470,14 @@ Function PointArrow(origin As Range, Target As Range)
     
     startX = origin.Offset(1, 1).Left
     startY = origin.Offset(1, 1).Top
-    endX = Target.Left
-    endY = Target.Top
+    endX = target.Left
+    endY = target.Top
     
     With origin.Borders
         .Weight = 1
         .Color = arrowColor
     End With
-    With Target.Borders
+    With target.Borders
         .Weight = 1
         .Color = arrowColor
     End With
@@ -439,14 +531,7 @@ Sub MakeRowsEven()
 
     ' 循环MaxRow到最后一行，单侧颜色有，另一侧无时，将无的那一侧设为空行并打上灰色
     ' 定义空行的formula
-    Dim emptyFormula(1 To 7) As Variant
-    emptyFormula(1) = "'-"
-    emptyFormula(2) = "'-"
-    emptyFormula(3) = "'-"
-    emptyFormula(4) = 0
-    emptyFormula(5) = 0
-    emptyFormula(6) = 0
-    emptyFormula(7) = 0
+
     Set coRow = coRegion.Rows(3)
     Set baRow = baRegion.Rows(3)
     Dim MatchColor As Long
@@ -487,6 +572,11 @@ Sub MakeRowsEven()
     Loop
 
 End Sub
+
+
+
+
+
 
 
 
