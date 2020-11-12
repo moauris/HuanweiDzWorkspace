@@ -81,7 +81,7 @@ Sub SyncFromBookMain()
             GoTo CLEAN_UP
     End Select
 
-    Call TryConsolidateSingle
+    Call TryConsolidate
     '导入和单项对账完成，标记双方工作区
     Dim CurrencyColumns As Range
     '对账完成，开始制造中文货币格式
@@ -93,7 +93,7 @@ CLEAN_UP:
 End Sub
 
 '检查两表是否齐全，如果齐全，开始对账程序
-Sub TryConsolidateSingle()
+Sub TryConsolidate()
     '检查两表是否齐全
     Dim CompanyRegion, BankRegion As Range
     Dim colorConsolidated As Variant
@@ -114,7 +114,6 @@ Sub TryConsolidateSingle()
 
     '生成空行填充不平项目
     Call MakeRowsEven
-    
 
     '检查完毕，开始对账
     '进行单项对单项核对
@@ -353,9 +352,9 @@ Sub MakeInitCompensation()
         CoInitBalance.Value < BaInitBalance.Value, CoInitBalance)
     diff = maxRange - minRange
     '将正数的差值插入在min之后
-    rangeValues = Array(minRange.Offset(0, -5), "'-", "优先调整项", "0", diff, "")
-    minRange.Offset(1, -5).Resize(1, 6).Insert (xlDown)
-    Set insertedRange = minRange.Offset(1, -5).Resize(1, 6)
+    rangeValues = Array(maxRange.Offset(0, -5), "'-", "优先调整项", "0", diff, "")
+    maxRange.Offset(1, -5).Resize(1, 6).Insert (xlDown)
+    Set insertedRange = maxRange.Offset(1, -5).Resize(1, 6)
     insertedRange.Formula = rangeValues
 End Sub
 
@@ -382,4 +381,11 @@ Sub SubBalanceWFormula()
         Set BaInitBalance = BaInitBalance.Offset(1, 0)
     Loop
     
+End Sub
+
+' 开始执行单对单对账
+' 寻找有且仅有单笔对齐的账目
+' 同侧也算
+Sub RunSingleToSingleConsolidate()
+
 End Sub
