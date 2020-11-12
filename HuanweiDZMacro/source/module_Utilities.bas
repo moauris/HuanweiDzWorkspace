@@ -248,5 +248,61 @@ Public Function SyncToViewer(inputSheet As Worksheet, _
     Loop
 End Function
 
+' 给定某个借方或者贷方区域，在对面的相应位置列找出符合要求的查找区域
+' 【符合要求的区域】：1、正负号一致；2、绝对值小于目标绝对值
+Public Function SeekConsolidationRange(sourceRange As Range) As String
+    Dim sourceSum As Double
+    sourceSum = WorksheetFunction.Sum(sourceRange)
+    
+    Dim targetRange As Range '代表了对面的相应位置
+    Dim resultRange As Range
+    'D => L, E => M
+    '4 ={+8}=> 12, 5 => 13
+    Select Case sourceRange.Column
+        Case 4
+            Set targetRange = _
+            sourceRange.Worksheet.[L3]
+        Case 5
+            Set targetRange = _
+            sourceRange.Worksheet.[M3]
+        Case 12
+            Set targetRange = _
+            sourceRange.Worksheet.[D3]
+        Case 13
+            Set targetRange = _
+            sourceRange.Worksheet.[E3]
+    End Select
+    
+    If sourceSum < 0 Then
+        Do While targetRange.Value <> ""
+            If targetRange.Value < 0 And _
+                targetRange.Value > sourceSum Then
+                If resultRange Is Nothing Then
+                    Set resultRange = targetRange
+                Else
+                    Set resultRange = Union(resultRange, targetRange)
+                End If
+                
+            End If
+            Set targetRange = targetRange.Offset(1, 0)
+        Loop
+    Else
+        Do While targetRange.Value <> ""
+            If targetRange.Value > 0 And _
+                targetRange.Value < sourceSum Then
+                If resultRange Is Nothing Then
+                    Set resultRange = targetRange
+                Else
+                    Set resultRange = Union(resultRange, targetRange)
+                End If
+                
+            End If
+            Set targetRange = targetRange.Offset(1, 0)
+        Loop
+    End If
+    SeekConsolidationRange = resultRange.Address
+End Function
+
+
 
 
