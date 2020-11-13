@@ -311,4 +311,10 @@ Public Function SelectCurrentRegionRow(sourceRange As Range) As Range
 End Function
 
 
+' 给定一个金额，是否可以在指定的区域内找到某种组合使其相等，可以则返回一个地址，不可以则返回0
+Public Function FindSumAddress(sourceRange as Range, targetSum as Double) as Variant
+    Dim i as Integer
+    Dim j as Integer
 
+
+End Function

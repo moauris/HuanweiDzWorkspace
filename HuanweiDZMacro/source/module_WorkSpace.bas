@@ -228,6 +228,11 @@ Sub RunSingleConsolidation(leftStart As Range, rightStart As Range)
         
 SKIP_IROW:
     Next iRow
+
+
+
+
+
 End Sub
 
 
@@ -380,6 +385,8 @@ Sub MakeInitCompensation()
 End Sub
 
 ' 用公式代替余额项
+' 1.0.0.4 : 使用相对地址导致循环引用影响运行速度
+' 重新计算数值即可
 Sub SubBalanceWFormula()
     Dim CoInitBalance As Range
     Dim BaInitBalance As Range
@@ -387,17 +394,17 @@ Sub SubBalanceWFormula()
     Set BaInitBalance = viewerSheet.[N4]
     
     Do While CoInitBalance.Offset(0, -3).Value <> "本月合计"
-        CoInitBalance.Formula = "=" & _
-            CoInitBalance.Offset(-1, 0).Address & _
-            "+" & CoInitBalance.Offset(0, -2).Address & _
-            "-" & CoInitBalance.Offset(0, -1).Address
+        CoInitBalance.Formula = _
+            CoInitBalance.Offset(-1, 0).Address _
+            + CoInitBalance.Offset(0, -2).Address _
+            - CoInitBalance.Offset(0, -1).Address
         Set CoInitBalance = CoInitBalance.Offset(1, 0)
     Loop
     Do While BaInitBalance.Offset(0, -3).Value <> "本月合计"
-        BaInitBalance.Formula = "=" & _
-            BaInitBalance.Offset(-1, 0).Address & _
-            "+" & BaInitBalance.Offset(0, -2).Address & _
-            "-" & BaInitBalance.Offset(0, -1).Address
+        BaInitBalance.Formula = _
+            BaInitBalance.Offset(-1, 0).Address _
+            + BaInitBalance.Offset(0, -2).Address _
+            - BaInitBalance.Offset(0, -1).Address
 
         Set BaInitBalance = BaInitBalance.Offset(1, 0)
     Loop
