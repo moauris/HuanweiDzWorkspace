@@ -3,11 +3,16 @@ Option Explicit
 ' 版本日期：2020-11-09
 ' 作者：https://github.com/moauris
 ' 联系方式：mchenf@icloud.com
-' 模组：主程序
+
 ' 版本更新内容 1.0.0.4
+' Refactored some codes need more refactoring for consolidating multiple matched single lines
+
+
+
+' 版本更新内容 1.0.0.3
 ' viewerSheet 中去掉了贷方余额一项
 ' 在对账开始之前需要增加一条优先调整项，对余额低的一方进行余额的对齐
-' 将所有不引用 viewerSheet 的通用函数放在了这里
+' 将所有不引用 viewerSheet 的通用函数放在外面
  
 Dim viewerSheet As Worksheet '代表了表格显示区
 Dim coRegion, baRegion As Range '代表了公司、银行方工作区域
@@ -81,7 +86,7 @@ Sub SyncFromBookMain()
             GoTo CLEAN_UP
     End Select
 
-    Call TryConsolidate
+    Call TryConsolidateSingle
     '导入和单项对账完成，标记双方工作区
     Dim CurrencyColumns As Range
     '对账完成，开始制造中文货币格式
@@ -93,7 +98,7 @@ CLEAN_UP:
 End Sub
 
 '检查两表是否齐全，如果齐全，开始对账程序
-Sub TryConsolidate()
+Sub TryConsolidateSingle()
     '检查两表是否齐全
     Dim CompanyRegion, BankRegion As Range
     Dim colorConsolidated As Variant
@@ -114,9 +119,25 @@ Sub TryConsolidate()
 
     '生成空行填充不平项目
     Call MakeRowsEven
+    
+    
 
     '检查完毕，开始对账
     '进行单项对单项核对
+    
+    Call RunSingleConsolidation( _
+        viewerSheet.Range("$D$3"), _
+        viewerSheet.Range("$L$3"))
+        
+    Call RunSingleConsolidation( _
+        viewerSheet.Range("$E$3"), _
+        viewerSheet.Range("$M$3"))
+        
+     '对右表未对齐项进行排列组合
+    'Call CombineUnconsolidatedRows
+End Sub
+
+Sub RunSingleConsolidation(leftStart As Range, rightStart As Range)
     Dim iRow As Integer
     Dim jRow As Integer
     Dim RemCo As Range
@@ -133,11 +154,12 @@ Sub TryConsolidate()
         MatchAddress = "" '匹配地址归零
         SwitchAddres = "" '交换地址归零
         
-        Set RemCo = viewerSheet.Range("$F$" & iRow)
+        Set RemCo = leftStart.Offset(iRow - 3, 0)
+        If RemCo.Value = 0 Then GoTo SKIP_IROW
         For jRow = 3 To baRegion.Rows.Count
-            Set RowCo = RemCo.Offset(0, -5).Resize(1, 7)
-            Set RemBa = viewerSheet.Range("$N$" & jRow)
-            Set RowBa = RemBa.Offset(0, -5).Resize(1, 7)
+            Set RowCo = SelectCurrentRegionRow(RemCo)
+            Set RemBa = rightStart.Offset(jRow - 3, 0)
+            Set RowBa = SelectCurrentRegionRow(RemBa)
             If RemCo.Interior.Color = rgbWhite And _
                     RemBa.Interior.Color = rgbWhite Then
                 '如果贷方余额相等
@@ -203,11 +225,10 @@ Sub TryConsolidate()
                 intTimesFound = intTimesFound - 1
             Loop
         End If
+        
+SKIP_IROW:
     Next iRow
-    '对右表未对齐项进行排列组合
-    'Call CombineUnconsolidatedRows
 End Sub
-
 
 
 '将含有特定关键字的条目除外
@@ -257,8 +278,8 @@ Sub SwitchRow(origin As String, Destin As String)
     RowsFound = rngOrig.Count
     i = 1
     For Each rng In rngOrig
-        Set Orig = rng.Offset(0, -5).Resize(1, 7)
-        Set Dest = rngDest.Cells(i).Offset(0, -5).Resize(1, 7)
+        Set Orig = SelectCurrentRegionRow(rng)
+        Set Dest = SelectCurrentRegionRow(rngDest.Cells(i))
         temp = Orig.Cells.Formula
         Orig.Cells.Formula = Dest.Cells.Formula
         Dest.Cells.Formula = temp
@@ -351,7 +372,7 @@ Sub MakeInitCompensation()
     Set minRange = Switch(CoInitBalance.Value > BaInitBalance.Value, BaInitBalance, _
         CoInitBalance.Value < BaInitBalance.Value, CoInitBalance)
     diff = maxRange - minRange
-    '将正数的差值插入在min之后
+    '将贷方的差值插入在max之后
     rangeValues = Array(maxRange.Offset(0, -5), "'-", "优先调整项", "0", diff, "")
     maxRange.Offset(1, -5).Resize(1, 6).Insert (xlDown)
     Set insertedRange = maxRange.Offset(1, -5).Resize(1, 6)
@@ -381,11 +402,4 @@ Sub SubBalanceWFormula()
         Set BaInitBalance = BaInitBalance.Offset(1, 0)
     Loop
     
-End Sub
-
-' 开始执行单对单对账
-' 寻找有且仅有单笔对齐的账目
-' 同侧也算
-Sub RunSingleToSingleConsolidate()
-
 End Sub

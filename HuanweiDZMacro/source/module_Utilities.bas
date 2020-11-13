@@ -303,6 +303,12 @@ Public Function SeekConsolidationRange(sourceRange As Range) As String
     SeekConsolidationRange = resultRange.Address
 End Function
 
+' 返回某一格当前所在的区域中的整行交际
+Public Function SelectCurrentRegionRow(sourceRange As Range) As Range
+    Set SelectCurrentRegionRow = _
+        Intersect(sourceRange.EntireRow, sourceRange.CurrentRegion)
+
+End Function
 
 
 
